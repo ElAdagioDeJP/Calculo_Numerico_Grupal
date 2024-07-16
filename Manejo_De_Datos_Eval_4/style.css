@@ -1,0 +1,20 @@
+body{
+    background-color: rgb(226, 233, 239);
+    margin: 0px;
+    padding: 0px;
+}
+nav{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: rgb(83, 83, 250);
+    
+    
+}
+.elementos{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 50%;
+    margin: 0px 20px;
+}
