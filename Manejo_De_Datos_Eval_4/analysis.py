@@ -1,74 +1,70 @@
-# Analysis of wind data
+# Análisis de datos de viento
 import os
 import pandas as pd
 import matplotlib.pyplot as plt
 
-RESULTS_DIR = "Results"
+DIRECTORIO_RESULTADOS = "Resultados"
 
 def main():
-    print("Loading data...", end="\n\n")
-    model = read_model("Data/model.txt")
+    print("Cargando datos...", end="\n\n")
+    modelo = leer_modelo("Manejo_De_Datos_Eval_4/Datos/modelo.txt")
 
     try:
-        os.mkdir(RESULTS_DIR)
+        os.mkdir(DIRECTORIO_RESULTADOS)
     except FileExistsError:
         pass
 
-    print("Scatter figures matrix of first 1000 records", end="\n\n")
-    plot_scatter_first_1000(model)
+    print("Matriz de gráficos de dispersión de los primeros 1000 registros", end="\n\n")
+    graficar_dispersion_primeros_1000(modelo)
 
-    print("Scatter figures matrix of first 1000 records"
-          " with greatest wind speed", end="\n\n")
-    plot_scatter_greatest_speed_1000(model)
+    print("Matriz de gráficos de dispersión de los primeros 1000 registros"
+          " con mayor velocidad de viento", end="\n\n")
+    graficar_dispersion_velocidad_mayor_1000(modelo)
 
-    print("Histogram of wind speed with 36 partitions", end="\n\n")
-    plot_histogram_speed(model)
+    print("Histograma de velocidad del viento con 36 particiones", end="\n\n")
+    graficar_histograma_velocidad(modelo)
 
-    print("Monthly historic of wind mean speed", end="\n\n")
-    monthly = monthly_mean_speed(model)
+    print("Histórico mensual de la velocidad media del viento", end="\n\n")
+    mensual = velocidad_media_mensual(modelo)
 
-    print("Table of monthly wind mean speed", end="\n\n")
-    monthly_table = table_from_historic(monthly)
+    print("Tabla de velocidad media mensual del viento", end="\n\n")
+    tabla_mensual = tabla_desde_historico(mensual)
 
-    print("Plot of monthly wind mean speed per year", end="\n\n")
-    plot_monthly_historic(monthly_table)
+    print("Gráfico de la velocidad media mensual del viento por año", end="\n\n")
+    graficar_historico_mensual(tabla_mensual)
 
 
-def plot_scatter_first_1000(model):
+def graficar_dispersion_primeros_1000(modelo):
     pass
 
-def plot_scatter_greatest_speed_1000(model):
-    pd.plotting.scatter_matrix(model.nlargest(1000, "Speed(m/s)"))
+def graficar_dispersion_velocidad_mayor_1000(modelo):
+    pd.plotting.scatter_matrix(modelo.nlargest(1000, "Velocidad(m/s)"))
     plt.show()
 
-def plot_histogram_speed(model):
+def graficar_histograma_velocidad(modelo):
     pass
 
-def monthly_mean_speed(model):
-    monthly = model["Speed(m/s)"].groupby([model.index.year,
-                                           model.index.month]).mean()
-    monthly.rename_axis(index=["Year", "Month"], inplace=True)
-    print(monthly, end="\n\n")
-    monthly.to_csv(RESULTS_DIR + "/mon_hist_wind_mean_speed.txt", "\t")
-    monthly.plot(legend=True, figsize=(15, 5))
+def velocidad_media_mensual(modelo):
+    mensual = modelo["Velocidad(m/s)"].groupby([modelo.index.year,
+                                                 modelo.index.month]).mean()
+    mensual.rename_axis(index=["Año", "Mes"], inplace=True)
+    print(mensual, end="\n\n")
+    mensual.to_csv(DIRECTORIO_RESULTADOS + "/hist_mens_vel_media_viento.txt", "\t")
+    mensual.plot(legend=True, figsize=(15, 5))
     plt.show()
-    return monthly
+    return mensual
 
-def table_from_historic(monthly):
+def tabla_desde_historico(mensual):
     pass
 
-def plot_monthly_historic(monthly_table):
+def graficar_historico_mensual(tabla_mensual):
     pass
 
-def read_model(path):
-    model = pd.read_csv(path, sep="\s+", skiprows=3,
-                        usecols=["YYYYMMDD", "HHMM", "M(m/s)", "D(deg)"],
-                        parse_dates={"Timestamp": [0, 1]}, index_col="Timestamp")
-    model.rename(columns={"M(m/s)": "Speed(m/s)",
-                          "D(deg)": "Direction(deg)"},
-                 inplace=True)
-    return model
-
-if __name__ == "__main__":
-    main()
-
+def leer_modelo(ruta):
+    modelo = pd.read_csv(ruta, sep="\s+", skiprows=3,
+                         usecols=["YYYYMMDD", "HHMM", "M(m/s)", "D(grados)"],
+                         parse_dates={"MarcaTemporal": [0, 1]}, index_col="MarcaTemporal")
+    modelo.rename(columns={"M(m/s)": "Velocidad(m/s)",
+                           "D(grados)": "Dirección(grados)"},
+                  inplace=True)
+    return modelo
